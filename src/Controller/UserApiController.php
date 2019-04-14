@@ -44,7 +44,7 @@ class UserApiController extends AbstractController
     {
         $data = $this->getArrayFromJson($request);
 
-        $user = $this->getDoctrine()->getRepository('App:User')->find($data['id']);
+        $user = $this->getDoctrine()->getRepository('App:User')->find((int)$data['id']);
 
         return $this->json(
             $user,
@@ -55,17 +55,25 @@ class UserApiController extends AbstractController
     }
 
     /**
+     * CRUD Update - required int id, string email, string password from json
      * @Route("/api/user", methods={"PUT"})
      */
     public function apiUserUpdate(Request $request)
     {
         $data = $this->getArrayFromJson($request);
 
-        // todo
+        $isSuccessful = true;
+        try {
+            $em = $this->getDoctrine()->getManager();
+            /** @var User $user */
+            $user = $em->getRepository('App:User')->find((int)$data['id']);
+            $user->setEmail($data['email'])->setPassword($data['password']);
+            $em->flush();
+        } catch (\Throwable $throwable) {
+            $isSuccessful = false;
+        }
 
-        return $this->json(
-            ''
-        );
+        return $this->json($isSuccessful);
     }
 
     /**
@@ -79,7 +87,7 @@ class UserApiController extends AbstractController
         $isSuccessful = true;
         try {
             $em = $this->getDoctrine()->getManager();
-            $user = $em->getRepository('App:User')->find($data['id']);
+            $user = $em->getRepository('App:User')->find((int)$data['id']);
             $em->remove($user);
             $em->flush();
         } catch (\Throwable $throwable) {
