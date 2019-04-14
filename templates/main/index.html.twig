@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello!{% endblock %}
+
+{% block body %}
+
+    <h3>
+        <a href="{{ path('security_login') }}">Login</a>
+    </h3>
+
+    <h3>
+        <a href="{{ path('security_logout') }}">Logout</a>
+    </h3>
+
+    <h3>
+        <a href="{{ path('user_new') }}">Create new user</a>
+    </h3>
+
+{% endblock %}
