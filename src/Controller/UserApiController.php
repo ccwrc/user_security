@@ -39,7 +39,7 @@ class UserApiController extends AbstractController
     }
 
     /**
-     * CRUD Read - required int id
+     * CRUD Read one user - required int id
      * @Route("/api/user/{id}", methods={"GET"})
      */
     public function apiUserRead(int $id): JsonResponse
@@ -48,6 +48,22 @@ class UserApiController extends AbstractController
 
         return $this->json(
             $user,
+            200,
+            [],
+            ['groups' => 'api']
+        );
+    }
+
+    /**
+     * CRUD Read all users
+     * @Route("/api/user", methods={"GET"})
+     */
+    public function apiUserReadAll(): JsonResponse
+    {
+        $users = $this->getDoctrine()->getRepository('App:User')->findAll();
+
+        return $this->json(
+            $users,
             200,
             [],
             ['groups' => 'api']
