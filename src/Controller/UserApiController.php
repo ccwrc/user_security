@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\User;
+
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -17,7 +19,7 @@ class UserApiController extends AbstractController
      * CRUD Create - required string email, string password from json
      * @Route("/api/user", methods={"POST"})
      */
-    public function apiUserCreate(Request $request)
+    public function apiUserCreate(Request $request): JsonResponse
     {
         $data = $this->getArrayFromJson($request);
 
@@ -37,14 +39,12 @@ class UserApiController extends AbstractController
     }
 
     /**
-     * CRUD Read - required int id from json
-     * @Route("/api/user", methods={"GET"})
+     * CRUD Read - required int id
+     * @Route("/api/user/{id}", methods={"GET"})
      */
-    public function apiUserRead(Request $request)
+    public function apiUserRead(int $id): JsonResponse
     {
-        $data = $this->getArrayFromJson($request);
-
-        $user = $this->getDoctrine()->getRepository('App:User')->find((int)$data['id']);
+        $user = $this->getDoctrine()->getRepository('App:User')->find((int)$id);
 
         return $this->json(
             $user,
@@ -58,7 +58,7 @@ class UserApiController extends AbstractController
      * CRUD Update - required int id, string email, string password from json
      * @Route("/api/user", methods={"PUT"})
      */
-    public function apiUserUpdate(Request $request)
+    public function apiUserUpdate(Request $request): JsonResponse
     {
         $data = $this->getArrayFromJson($request);
 
@@ -80,7 +80,7 @@ class UserApiController extends AbstractController
      * CRUD Delete - required int id from json
      * @Route("/api/user", methods={"DELETE"})
      */
-    public function apiUserDelete(Request $request)
+    public function apiUserDelete(Request $request): JsonResponse
     {
         $data = $this->getArrayFromJson($request);
 
