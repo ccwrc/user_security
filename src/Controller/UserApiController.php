@@ -10,9 +10,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @IsGranted("ROLE_USER")
- */
+///**
+// * @IsGranted("ROLE_USER")
+// */
 class UserApiController extends AbstractController
 {
     /**
@@ -42,9 +42,12 @@ class UserApiController extends AbstractController
      * CRUD Read one user - required int id
      * @Route("/api/user/{id}", methods={"GET"})
      */
-    public function apiUserRead(int $id): JsonResponse
+    public function apiUserRead($id): JsonResponse
     {
         $user = $this->getDoctrine()->getRepository('App:User')->find((int)$id);
+        if (!$user) {
+            throw $this->createNotFoundException('No user found.');
+        }
 
         return $this->json(
             $user,
