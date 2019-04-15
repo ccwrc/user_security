@@ -10,9 +10,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-///**
-// * @IsGranted("ROLE_USER")
-// */
+/**
+ * @IsGranted("ROLE_USER")
+ */
 class UserApiController extends AbstractController
 {
     /**
