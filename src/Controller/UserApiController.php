@@ -88,7 +88,8 @@ class UserApiController extends AbstractController
             $em = $this->getDoctrine()->getManager();
             /** @var User $user */
             $user = $em->getRepository('App:User')->find((int)$data['id']);
-            $user->setEmail($data['email'])->setPassword($data['password']);
+            $form = $this->createForm(UserType::class, $user);
+            $form->submit($data);
             $em->flush();
         } catch (\Throwable $throwable) {
             $isSuccessful = false;
