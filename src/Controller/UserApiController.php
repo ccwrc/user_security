@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Form\UserType;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,8 +27,9 @@ class UserApiController extends AbstractController
         $isSuccessful = true;
         try {
             $user = new User();
-            $user->setEmail($data['email'])
-                ->setPassword($data['password']);
+            $form = $this->createForm(UserType::class, $user);
+            $form->submit($data);
+
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
             $em->flush();
