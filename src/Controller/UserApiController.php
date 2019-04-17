@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\UserType;
 
+use Doctrine\ORM\EntityManagerInterface;
+
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -20,7 +22,7 @@ class UserApiController extends AbstractController
      * CRUD Create - required string email, string password from json
      * @Route("/api/user", methods={"POST"})
      */
-    public function apiUserCreate(Request $request): JsonResponse
+    public function apiUserCreate(Request $request, EntityManagerInterface $em): JsonResponse
     {
         $data = $this->getArrayFromJson($request);
 
@@ -30,7 +32,6 @@ class UserApiController extends AbstractController
             $form = $this->createForm(UserType::class, $user);
             $form->submit($data);
 
-            $em = $this->getDoctrine()->getManager();
             $em->persist($user);
             $em->flush();
         } catch (\Throwable $throwable) {
@@ -44,9 +45,9 @@ class UserApiController extends AbstractController
      * CRUD Read one user - required int id
      * @Route("/api/user/{id}", methods={"GET"})
      */
-    public function apiUserRead($id): JsonResponse
+    public function apiUserRead(EntityManagerInterface $em, $id): JsonResponse
     {
-        $user = $this->getDoctrine()->getRepository('App:User')->find((int)$id);
+        $user = $em->getRepository('App:User')->find((int)$id);
         if (!$user) {
             throw $this->createNotFoundException('No user found.');
         }
@@ -63,9 +64,9 @@ class UserApiController extends AbstractController
      * CRUD Read all users
      * @Route("/api/user", methods={"GET"})
      */
-    public function apiUserReadAll(): JsonResponse
+    public function apiUserReadAll(EntityManagerInterface $em): JsonResponse
     {
-        $users = $this->getDoctrine()->getRepository('App:User')->findAll();
+        $users = $em->getRepository('App:User')->findAll();
 
         return $this->json(
             $users,
@@ -79,13 +80,12 @@ class UserApiController extends AbstractController
      * CRUD Update - required int id, string email, string password from json
      * @Route("/api/user", methods={"PUT"})
      */
-    public function apiUserUpdate(Request $request): JsonResponse
+    public function apiUserUpdate(Request $request, EntityManagerInterface $em): JsonResponse
     {
         $data = $this->getArrayFromJson($request);
 
         $isSuccessful = true;
         try {
-            $em = $this->getDoctrine()->getManager();
             /** @var User $user */
             $user = $em->getRepository('App:User')->find((int)$data['id']);
             $form = $this->createForm(UserType::class, $user);
@@ -102,13 +102,12 @@ class UserApiController extends AbstractController
      * CRUD Delete - required int id from json
      * @Route("/api/user", methods={"DELETE"})
      */
-    public function apiUserDelete(Request $request): JsonResponse
+    public function apiUserDelete(Request $request, EntityManagerInterface $em): JsonResponse
     {
         $data = $this->getArrayFromJson($request);
 
         $isSuccessful = true;
         try {
-            $em = $this->getDoctrine()->getManager();
             $user = $em->getRepository('App:User')->find((int)$data['id']);
             $em->remove($user);
             $em->flush();
