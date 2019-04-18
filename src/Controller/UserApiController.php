@@ -45,13 +45,8 @@ class UserApiController extends AbstractController
      * CRUD Read one user - required int id
      * @Route("/api/user/{id}", methods={"GET"})
      */
-    public function apiUserRead(EntityManagerInterface $em, $id): JsonResponse
+    public function apiUserRead(User $user): JsonResponse
     {
-        $user = $em->getRepository('App:User')->find((int)$id);
-        if (!$user) {
-            throw $this->createNotFoundException('No user found.');
-        }
-
         return $this->json(
             $user,
             200,
